@@ -4,6 +4,8 @@
 
 from os import system as cmd
 from bs4 import BeautifulSoup as Soup
+from requests import get
+
 
 
 cmd('color a')
@@ -18,5 +20,9 @@ color = {
     "white": "\u001b[37m",
     "reset": "\u001b[0m"
 }
+
+urls = [
+    "https://www.newegg.com/p/pl?d=3080&N=100007709&isdeptsrh=1"
+]
 headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
 soup = BeautifulSoup(requests.get(url, headers=headers).text, 'html.parser')
