@@ -1,11 +1,15 @@
 ### 01 / 01 / 2021
 ### Web scrapper Development
-### Author: Edwin Guama
+### Author: Guamaboy
 
 # Import Libraries
+import time
 from requests import get
 from os import system as cmd
+from datetime import datetime
 from bs4 import BeautifulSoup as Soup
+
+cmd('cls')
 
 # Color Dictionary
 color = {
@@ -20,9 +24,9 @@ color = {
 }
 
 # Website urls
-# Paste supported urls in format of: "https://websitename.com/productpage"
+# Paste supported urls in format of: "https://websitename.com/productpath/itempage"
 urls = [
-    "https://www.newegg.com/p/pl?d=3080&N=100007709&isdeptsrh=1",
+    "https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1",
 ]
 
 # Using requests library to download webpages and bs4 to parse them
@@ -30,9 +34,26 @@ urls = [
 def soupify():
     headers = {"User-Agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36"}
     page = get(url, headers=headers)
-    soup = Soup(page.content, 'html.parser')
+    soup = Soup(page.text, 'html.parser')
+    return soup
 
 # While loop to initate iteration through urls
-while True:
+i = 0
+while i < 1:
     for url in urls:
-        soupify()
+# Newegg
+        if url.split('.')[1] == 'newegg':
+            soup = soupify()
+            products = soup.find_all('div', class_="item-container")
+            for product in products:
+                if True:
+                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:115])
+                elif True:
+                    pass
+                else:
+                    pass
+            i += 1
+        else:
+            print("The url " + url + " is not currently supported!")
+
+print("There are no sites to scrap\nOpen the .py and append the 'urls' list")
