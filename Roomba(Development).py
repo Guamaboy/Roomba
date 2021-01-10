@@ -38,21 +38,26 @@ def soupify():
     return soup
 
 # While loop to initate iteration through urls
-i = 0
-while i < 1:
+while urls != 0:
     for url in urls:
-# Newegg
         if url.split('.')[1] == 'newegg':
+# Newegg
             soup = soupify()
             products = soup.find_all('div', class_="item-container")
             for product in products:
-                if True:
-                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:115])
-                elif True:
-                    pass
-                else:
-                    pass
-            i += 1
+# If 'COMING SOON'
+                if product.find('li', class_='price-current').text == 'COMING SOON':
+                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'COMING SOON ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+# If 'OUT OF STOCK'
+                elif str(product.find('p',class_="item-promo")) == '<p class="item-promo"><i class="item-promo-icon"></i>OUT OF STOCK</p>':
+                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['red'] + product.find('p',class_="item-promo").text + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+# If 'IN STOCK'
+                elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
+                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['green'] + '  IN STOCK  ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+
+# Set a timeout to avoid spam detection
+            print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
+            time.sleep(3)
         else:
             print("The url " + url + " is not currently supported!")
 
