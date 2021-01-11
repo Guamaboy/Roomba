@@ -55,7 +55,7 @@ while urls != 0:
                 elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
                     print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['green'] + '  IN STOCK  ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
 
-# Set a timeout to avoid spam detection
+# Set a timeout to avoid spam/bot detection
             print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
             time.sleep(3)
         else:
