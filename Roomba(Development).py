@@ -49,7 +49,7 @@ while urls != 0:
                 if product.find('li', class_='price-current').text == 'COMING SOON':
                     print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'COMING SOON ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
 # If 'OUT OF STOCK'
-                elif str(product.find('p',class_="item-promo")) == '<p class="item-promo"><i class="item-promo-icon"></i>OUT OF STOCK</p>':
+                elif product.find('p',class_="item-promo").text == 'OUT OF STOCK':
                     print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['red'] + product.find('p',class_="item-promo").text + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
 # If 'IN STOCK'
                 elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
