@@ -26,7 +26,10 @@ color = {
 # Website urls
 # Paste supported urls in format of: "https://websitename.com/productpath/itempage"
 urls = [
-    "https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1",
+    #Playstation 5
+    "https://www.newegg.com/p/pl?d=ps5&N=101696840&isdeptsrh=1",
+    #RTX 3080
+    #"https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1"
 ]
 
 # Using requests library to download webpages and bs4 to parse them
