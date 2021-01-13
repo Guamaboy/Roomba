@@ -4,7 +4,6 @@
 
 # Import Libraries
 import os
-from sys import excepthook
 import time
 import webbrowser
 from requests import get
@@ -32,9 +31,10 @@ urls = [
     # Playstation 5
     "https://www.newegg.com/p/pl?d=ps5&N=101696840&isdeptsrh=1",
     # Intel 10900k
-    "https://www.newegg.com/p/pl?d=intel+10900k&N=100007671&isdeptsrh=1",
+    #"https://www.newegg.com/p/pl?d=intel+10900k&N=100007671&isdeptsrh=1",
     # RTX 3080
-    #"https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1"
+    "https://www.newegg.com/p/pl?d=rtx+3080&N=100007709&isdeptsrh=1",
+    
 ]
 
 # Using requests library to download webpages and bs4 to parse them
