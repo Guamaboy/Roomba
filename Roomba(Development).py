@@ -3,13 +3,14 @@
 ### Author: Guamaboy
 
 # Import Libraries
+import os
 import time
 from requests import get
-from os import system as cmd
 from datetime import datetime
+from twilio.rest import Client
 from bs4 import BeautifulSoup as Soup
 
-cmd('cls')
+os.system('cls')
 
 # Color Dictionary
 color = {
@@ -40,6 +41,20 @@ def soupify():
     soup = Soup(page.text, 'html.parser')
     return soup
 
+# Twilio SMS API variables
+account_sid = os.environ['TwilioSid']
+auth_token = os.environ['TwilioAuth']
+client = Client(account_sid, auth_token)
+sentProducts = []
+
+def sendsms():
+    message = client.messages \
+                .create(
+                     body = ('In Stock \n' + product.find('li', class_='price-current').text[:-1] + '\n' + product.find('a',class_="item-title")['href']),
+                     from_ = os.environ['TwilioPhone'],
+                     to = os.environ['MyPhone']
+                 )
+
 # While loop to initate iteration through urls
 while urls != 0:
     for url in urls:
@@ -48,19 +63,28 @@ while urls != 0:
             soup = soupify()
             products = soup.find_all('div', class_="item-container")
             for product in products:
+                try:
 # If 'COMING SOON'
-                if product.find('li', class_='price-current').text == 'COMING SOON':
-                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'COMING SOON ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+                    if product.find('li', class_='price-current').text == 'COMING SOON':
+                        print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'COMING SOON ' + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
 # If 'OUT OF STOCK'
-                elif product.find('p',class_="item-promo").text == 'OUT OF STOCK':
-                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['red'] + product.find('p',class_="item-promo").text + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+                    elif product.find('p',class_="item-promo").text == 'OUT OF STOCK':
+                        print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['red'] + product.find('p',class_="item-promo").text + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
 # If 'IN STOCK'
-                elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
-                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['green'] + '  IN STOCK  ' + color["magenta"] + ' || ' + color["white"] + product.find_all('a',class_="item-title")[0].text[:150])
+                    elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
+                        print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['green'] + '  IN STOCK  ' + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
+# Send an SMS once eveytime an item comes into stock.(Part of the In stock if statement)
+                        if product.find('a',class_="item-title").text not in sentProducts:
+                            sendsms()
+                            print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["cyan"] + 'Twilio' + color['white'] + '  --------------->  ' + color["cyan"] + 'Successfully sent linked SMS to your phone.')
+                            sentProducts.append(product.find('a',class_="item-title").text)
+                except:
+                    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["yellow"] + ' Warn ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'Item Except ' + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
 
 # Set a timeout to avoid spam/bot detection
-            print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
-            time.sleep(3)
+                time.sleep(.25)
+            #print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
+            #time.sleep(3)
         else:
             print("The url " + url + " is not currently supported!")
 
