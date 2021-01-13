@@ -5,6 +5,7 @@
 # Import Libraries
 import os
 import time
+import webbrowser
 from requests import get
 from datetime import datetime
 from twilio.rest import Client
@@ -54,12 +55,20 @@ def sendsms():
                      from_ = os.environ['TwilioPhone'],
                      to = os.environ['MyPhone']
                  )
+    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["cyan"] + 'Twilio' + color['white'] + '  --------------->  ' + color["cyan"] + 'Successfully sent linked SMS to your phone.')
+
+# Open the default browser to the product page
+def openLink():
+    webbrowser.open(product.find('a',class_="item-title")['href'])
+    print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["white"] + 'System' + color['white'] + '  --------------->  ' + color["cyan"] + 'Successfully opened link to product page.')
+
 
 # While loop to initate iteration through urls
 while urls != 0:
     for url in urls:
+
+### Newegg ###
         if url.split('.')[1] == 'newegg':
-# Newegg
             soup = soupify()
             products = soup.find_all('div', class_="item-container")
             for product in products:
@@ -73,18 +82,20 @@ while urls != 0:
 # If 'IN STOCK'
                     elif product.find('button',class_="btn").text == 'View Details' or 'Add to cart':
                         print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['green'] + '  IN STOCK  ' + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
-# Send an SMS once eveytime an item comes into stock.(Part of the In stock if statement)
+
+# Send an SMS once eveytime an item comes into stock.(Part of the 'IN STOCK' if statement)
                         if product.find('a',class_="item-title").text not in sentProducts:
                             sendsms()
-                            print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["green"] + ' Info ' + color["magenta"] + '|| ' + color["cyan"] + 'Twilio' + color['white'] + '  --------------->  ' + color["cyan"] + 'Successfully sent linked SMS to your phone.')
+                            openLink()
                             sentProducts.append(product.find('a',class_="item-title").text)
+
                 except:
                     print(color["white"] + datetime.now().strftime("[%I:%M:%S %p]") + color["yellow"] + ' Warn ' + color["magenta"] + '|| ' + color["blue"] + url.split('.')[1].capitalize() + color["magenta"] + ' || ' + color['yellow'] + 'Item Except ' + color["magenta"] + ' || ' + color["white"] + product.find('a',class_="item-title").text[:150])
 
 # Set a timeout to avoid spam/bot detection
                 time.sleep(.25)
-            #print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
-            #time.sleep(3)
+            print(color["yellow"] + "Pausing to avoid bot detection\nChecking again every 3 seconds...")
+            time.sleep(3)
         else:
             print("The url " + url + " is not currently supported!")
 
